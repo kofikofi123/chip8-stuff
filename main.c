@@ -118,6 +118,9 @@ int main(int argc, char* argv[]){
 		if (!chip->isKeyWait)
 			stepEmulator(chip);
 
+		if (chip->error)
+			break;
+
 		uint8_t delayTimer = chip->delayRegister;
 
 		if (delayTimer > 0){

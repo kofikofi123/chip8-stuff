@@ -18,7 +18,6 @@ static uint16_t popStack(struct Chip8*);
 static void pushStack(struct Chip8*, uint16_t);
 
 static void drawSprite(struct Chip8*, uint8_t, uint8_t, uint8_t);
-static void plotPixel(uint32_t*, uint8_t, uint8_t);
 
 
 
@@ -85,8 +84,8 @@ void stepEmulator(struct Chip8* chip8){
 			}else if (subop == 0xEE)
 				chip8->pc = popStack(chip8);
 			else{
-				printf(">Unknown instruction: %#x at %x\n", inst, chip8->pc - 2);
-				assert(0);
+				printf("Unknown instruction: %#x at %x\n", inst, chip8->pc - 2);
+				chip8->error = 1;
 			}
 
 			break;
@@ -158,8 +157,11 @@ void stepEmulator(struct Chip8* chip8){
 			}else if (subop == 0xE){
 				writeRegister(chip8, 0x0F, cregX >> 7);
 				writeRegister(chip8, regX, cregX << 1);
-			}else
+			}else{
 				printf("Unknown instruction %x\n", inst);
+				chip8->error = 1;
+			}
+
 			break;
 		}
 		case 0x09: {
@@ -195,7 +197,6 @@ void stepEmulator(struct Chip8* chip8){
 			}else{
 				printf("Unknown instruction of 0x0E opcode: %x\n", subop);
 				chip8->error = 1;
-				assert(0);
 			}
 
 			break;
@@ -269,9 +270,6 @@ static void drawSprite(struct Chip8* chip8, uint8_t x, uint8_t y, uint8_t n){
 	uint32_t scale = chip8->dispScale;
 
 	uint32_t width_scale = width * scale;
-	uint32_t height_scale = height * scale;
-
-	uint32_t vwidth = width_scale * scale;
 
 	uint32_t* videoBuffer = chip8->videoBuffer;
 	uint8_t* memory = chip8->memory + chip8->I;
@@ -302,9 +300,6 @@ static void drawSprite(struct Chip8* chip8, uint8_t x, uint8_t y, uint8_t n){
 	}
 }
 
-static void plotPixel(uint32_t* videoBuffer, uint8_t pixVal, uint8_t scale){
-	memset(videoBuffer, pixVal, scale);
-}
 
 void debugDisplay(struct Chip8* chip){
 	uint32_t* videoBuffer = chip->videoBuffer;
