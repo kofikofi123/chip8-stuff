@@ -122,9 +122,15 @@ int main(int argc, char* argv[]){
 			break;
 
 		uint8_t delayTimer = chip->delayRegister;
+		uint8_t soundTimer = chip->soundRegister;
 
 		if (delayTimer > 0){
 			chip->delayRegister--;
+		}
+
+		if (soundTimer > 0){
+			printf("Beep\n");
+			chip->soundRegister--;
 		}
 
 		SDL_UpdateTexture(texture,
