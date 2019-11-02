@@ -84,7 +84,7 @@ void stepEmulator(struct Chip8* chip8){
 			}else if (subop == 0xEE)
 				chip8->pc = popStack(chip8);
 			else{
-				printf("Unknown instruction: %#x at %x\n", inst, chip8->pc - 2);
+				printf("Unknown instruction: %#x at %#x\n", inst, oldPC);
 				chip8->error = 1;
 			}
 
